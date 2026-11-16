@@ -1,0 +1,1838 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#FF5A36" />
+  <title>YAARI – अपना देसी सोशल मीडिया</title>
+  <style>
+    :root {
+      --p1: #FF5A36;
+      --p2: #E11D48;
+      --p3: #7C3AED;
+      --grad: linear-gradient(135deg, #FF5A36, #E11D48, #7C3AED);
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, 'Noto Sans Devanagari', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 72px;
+    }
+    button, input, textarea { font-family: inherit; }
+    button { cursor: pointer; border: none; background: none; }
+    .hidden { display: none !important; }
+    .container { max-width: 560px; margin: 0 auto; padding: 12px; }
+    .header {
+      position: sticky; top: 0; z-index: 30;
+      background: rgba(255,255,255,0.96); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 560px; margin: 0 auto; height: 56px; padding: 0 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: inline-flex; align-items: center; gap: 8px; }
+    .logo-badge {
+      width: 32px; height: 32px; border-radius: 10px; background: var(--grad);
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900;
+      box-shadow: 0 4px 10px rgba(225,29,72,0.25);
+    }
+    .logo-text {
+      font-size: 20px; font-weight: 900; letter-spacing: -0.5px;
+      background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .icon-btn {
+      position: relative; width: 38px; height: 38px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #334155; transition: background 0.15s;
+    }
+    .icon-btn:hover { background: #f1f5f9; }
+    .badge {
+      position: absolute; top: 2px; right: 2px; min-width: 17px; height: 17px;
+      padding: 0 4px; border-radius: 99px; background: var(--p2); color: #fff;
+      font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 22px; overflow: hidden; margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    }
+    .card-pad { padding: 16px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 11px 16px; border-radius: 14px; font-size: 13px; font-weight: 700;
+      transition: opacity 0.15s;
+    }
+    .btn:active { opacity: 0.85; }
+    .btn-primary { background: var(--grad); color: #fff; width: 100%; }
+    .btn-soft { background: #f1f5f9; color: #1e293b; }
+    .btn-danger { background: #fef2f2; color: #dc2626; }
+    .btn-dark { background: #0f172a; color: #fff; }
+    .input {
+      width: 100%; padding: 11px 14px; border-radius: 14px;
+      border: 1px solid var(--border); font-size: 14px; outline: none; background: #fff;
+    }
+    .input:focus { border-color: var(--p1); }
+    .avatar { border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; background: #f1f5f9; }
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      background: rgba(255,255,255,0.97); backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+    }
+    .bottom-nav-inner {
+      max-width: 560px; margin: 0 auto; height: 62px;
+      display: grid; grid-template-columns: repeat(5, 1fr);
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; font-size: 11px; font-weight: 700; color: var(--muted);
+    }
+    .nav-item.active { color: var(--p1); }
+    .stories-row {
+      display: flex; gap: 12px; overflow-x: auto; padding: 12px 14px;
+      scrollbar-width: none;
+    }
+    .stories-row::-webkit-scrollbar { display: none; }
+    .story-item { width: 66px; flex-shrink: 0; text-align: center; }
+    .story-ring {
+      width: 64px; height: 64px; border-radius: 50%; padding: 2.5px;
+      background: var(--grad); position: relative; margin: 0 auto 4px;
+    }
+    .story-ring.seen { background: #cbd5e1; }
+    .story-ring.empty { background: none; border: 2px dashed #cbd5e1; }
+    .story-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #fff; }
+    .story-plus {
+      position: absolute; bottom: -2px; right: -2px; width: 22px; height: 22px;
+      border-radius: 50%; background: var(--p1); color: #fff; border: 2px solid #fff;
+      font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+    }
+    .post-media { width: 100%; max-height: 460px; background: #000; display: block; object-fit: cover; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 4px; }
+    .grid-cell { aspect-ratio: 1/1; background: #000; overflow: hidden; border-radius: 8px; position: relative; }
+    .grid-cell img, .grid-cell video { width: 100%; height: 100%; object-fit: cover; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; background: #fff; border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; }
+    .tab-btn { padding: 9px; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--muted); }
+    .tab-btn.active { background: var(--p1); color: #fff; }
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,0.68);
+      display: flex; align-items: center; justify-content: center; padding: 14px;
+    }
+    .modal-box {
+      background: #fff; width: 100%; max-width: 460px; border-radius: 24px;
+      max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .reels-wrap {
+      position: fixed; inset: 0 0 62px 0; z-index: 25; background: #000;
+      overflow-y: scroll; scroll-snap-type: y mandatory;
+    }
+    .reel-slide {
+      height: 100%; width: 100%; scroll-snap-align: start; scroll-snap-stop: always;
+      position: relative; display: flex; align-items: center; justify-content: center; background: #000;
+    }
+    .reel-video { width: 100%; height: 100%; object-fit: contain; }
+    .reel-actions {
+      position: absolute; right: 12px; bottom: 24px; z-index: 5;
+      display: flex; flex-direction: column; align-items: center; gap: 14px; color: #fff;
+    }
+    .reel-act-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      color: #fff; font-size: 11px; font-weight: 700; text-shadow: 0 1px 4px #000;
+    }
+    .reel-act-circle {
+      width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .chat-box {
+      display: flex; flex-direction: column; height: calc(100vh - 148px);
+      background: #fff; border: 1px solid var(--border); border-radius: 22px; overflow: hidden;
+    }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 14px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px; }
+    .bubble { max-width: 78%; padding: 9px 13px; border-radius: 18px; font-size: 14px; line-height: 1.4; }
+    .bubble.me { align-self: flex-end; background: linear-gradient(135deg, #FF5A36, #E11D48); color: #fff; border-bottom-right-radius: 4px; }
+    .bubble.them { align-self: flex-start; background: #fff; border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 4px; }
+    .toast {
+      position: fixed; top: 68px; left: 50%; transform: translateX(-50%); z-index: 90;
+      background: #0f172a; color: #fff; padding: 10px 18px; border-radius: 99px;
+      font-size: 12px; font-weight: 700; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+    .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--grad); transition: width 0.15s; }
+    .row { display: flex; align-items: center; gap: 10px; }
+    .between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #fff; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="modal-root"></div>
+  <div id="toast-root"></div>
+
+  <script>
+    const STORAGE_KEY = 'yaari_local_db_v1';
+    const IDB_NAME = 'yaari_media_idb_v1';
+    const blobUrlCache = {};
+
+    // ---------- सुरक्षित SVG और डेटा हेल्पर्स ----------
+    function esc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function makeAvatar(name, color = '#FF5A36') {
+      const ch = esc((name || 'य').trim().charAt(0).toUpperCase());
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" rx="60" fill="${color}"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="52" font-family="sans-serif" font-weight="bold">${ch}</text></svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    function makeSampleArt(title, bg1, bg2) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="540"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/></linearGradient></defs><rect width="720" height="540" fill="url(#g)"/><circle cx="580" cy="120" r="90" fill="rgba(255,255,255,0.16)"/><circle cx="140" cy="430" r="120" fill="rgba(255,255,255,0.12)"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="38" font-family="sans-serif" font-weight="bold">${esc(title)}</text></svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    function timeAgo(ts) {
+      if (!ts) return 'अभी-अभी';
+      const s = Math.floor((Date.now() - ts) / 1000);
+      if (s < 60) return 'अभी-अभी';
+      const m = Math.floor(s / 60);
+      if (m < 60) return `${m} मिनट पहले`;
+      const h = Math.floor(m / 60);
+      if (h < 24) return `${h} घंटे पहले`;
+      return `${Math.floor(h / 24)} दिन पहले`;
+    }
+
+    function showToast(msg) {
+      const root = document.getElementById('toast-root');
+      root.innerHTML = `<div class="toast">${esc(msg)}</div>`;
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => { root.innerHTML = ''; }, 2400);
+    }
+
+    // ---------- IndexedDB (बड़े वीडियो ऑफ़लाइन सेव करने हेतु) ----------
+    function openMediaDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) return reject();
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('files');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject();
+      });
+    }
+
+    async function saveMediaBlob(key, blob) {
+      try {
+        const db = await openMediaDB();
+        await new Promise((res, rej) => {
+          const tx = db.transaction('files', 'readwrite');
+          tx.objectStore('files').put(blob, key);
+          tx.oncomplete = res;
+          tx.onerror = rej;
+        });
+        blobUrlCache[key] = URL.createObjectURL(blob);
+        return key;
+      } catch {
+        blobUrlCache[key] = URL.createObjectURL(blob);
+        return key;
+      }
+    }
+
+    async function hydrateAllVideos() {
+      try {
+        const db = await openMediaDB();
+        const tx = db.transaction('files', 'readonly');
+        const store = tx.objectStore('files');
+        const keysReq = store.getAllKeys();
+        keysReq.onsuccess = () => {
+          const keys = keysReq.result || [];
+          let changed = false;
+          keys.forEach((k) => {
+            if (!blobUrlCache[k]) {
+              const g = store.get(k);
+              g.onsuccess = () => {
+                if (g.result) {
+                  blobUrlCache[k] = URL.createObjectURL(g.result);
+                  if (!changed) { changed = true; setTimeout(render, 80); }
+                }
+              };
+            }
+          });
+        };
+      } catch {}
+    }
+
+    function resolveMediaSrc(url) {
+      if (!url) return '';
+      if (url.startsWith('idb:')) return blobUrlCache[url] || '';
+      return url;
+    }
+
+    function compressImage(file, maxW = 900) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, maxW / img.width);
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.78));
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ---------- प्रारंभिक डेटाबेस (localStorage) ----------
+    function createInitialDB() {
+      const now = Date.now();
+      return {
+        currentUserId: null,
+        users: [
+          {
+            uid: 'u_aarav', name: 'आरव शर्मा', username: 'aarav_sharma',
+            email: 'aarav@yaari.in', phone: '9876543210', password: '123456',
+            bio: 'यात्रा, फोटोग्राफी और YAARI पर दोस्तों से जुड़ाव।',
+            photoURL: '', isPrivate: false, isAdmin: false, isBanned: false, isOnline: true, lastSeen: now,
+            followers: ['u_priya'], following: ['u_priya'], followRequests: [],
+            friends: ['u_priya'], friendRequests: [], blocked: [], savedPosts: []
+          },
+          {
+            uid: 'u_priya', name: 'प्रिया वर्मा', username: 'priya_verma',
+            email: 'priya@yaari.in', phone: '9811223344', password: '123456',
+            bio: 'संगीत और देसी कहानियाँ ✨',
+            photoURL: '', isPrivate: false, isAdmin: false, isBanned: false, isOnline: true, lastSeen: now,
+            followers: ['u_aarav'], following: ['u_aarav'], followRequests: [],
+            friends: ['u_aarav'], friendRequests: [], blocked: [], savedPosts: []
+          },
+          {
+            uid: 'u_admin', name: 'YAARI एडमिन', username: 'yaari_admin',
+            email: 'admin@yaari.in', phone: '9000000000', password: '123456',
+            bio: 'YAARI समुदाय व्यवस्थापक',
+            photoURL: '', isPrivate: false, isAdmin: true, isBanned: false, isOnline: true, lastSeen: now,
+            followers: [], following: [], followRequests: [],
+            friends: [], friendRequests: [], blocked: [], savedPosts: []
+          }
+        ],
+        posts: [
+          {
+            id: 'p_1', authorId: 'u_priya',
+            mediaUrl: makeSampleArt('शाम की चाय और यारी ☕', '#FF5A36', '#E11D48'),
+            mediaType: 'image', caption: 'दोस्तों के साथ शाम की चाय का मज़ा ही अलग है! #YAARI',
+            likes: ['u_aarav'],
+            comments: [{ id: 'c_1', authorId: 'u_aarav', text: 'वाह! बहुत बढ़िया तस्वीर है।', createdAt: now - 1800000 }],
+            createdAt: now - 3600000
+          },
+          {
+            id: 'p_2', authorId: 'u_aarav',
+            mediaUrl: makeSampleArt('पहाड़ों की सुबह 🏔️', '#7C3AED', '#2563EB'),
+            mediaType: 'image', caption: 'ताज़ी हवा और खूबसूरत नज़ारा — जीवन का सबसे सुकून भरा पल।',
+            likes: ['u_priya'],
+            comments: [],
+            createdAt: now - 7200000
+          }
+        ],
+        stories: [
+          {
+            id: 's_1', authorId: 'u_priya',
+            mediaUrl: makeSampleArt('आज का सुविचार ✨', '#E11D48', '#7C3AED'),
+            mediaType: 'image', caption: 'मुस्कुराइए, आप YAARI पर हैं!',
+            views: [], reactions: [],
+            createdAt: now - 1200000, expiresAt: now + 23 * 3600 * 1000
+          }
+        ],
+        reels: [
+          {
+            id: 'r_1', authorId: 'u_aarav',
+            mediaUrl: makeSampleArt('देसी रील • स्वाइप करें 🎬', '#FF5A36', '#7C3AED'),
+            isDemoArt: true,
+            caption: 'अपनी गैलरी या कैमरे से असली वीडियो रील अपलोड करें!',
+            likes: ['u_priya'],
+            comments: [{ id: 'rc_1', authorId: 'u_priya', text: 'सुपर रील!', createdAt: now - 600000 }],
+            createdAt: now - 2400000
+          }
+        ],
+        chats: [
+          {
+            id: 'chat_u_aarav_u_priya',
+            participants: ['u_aarav', 'u_priya'],
+            messages: [
+              { id: 'm_1', senderId: 'u_priya', text: 'नमस्ते आरव! YAARI ऐप कैसा लगा?', mediaUrl: '', mediaType: '', isRead: true, createdAt: now - 900000 },
+              { id: 'm_2', senderId: 'u_aarav', text: 'बहुत ही शानदार और तेज़ है!', mediaUrl: '', mediaType: '', isRead: false, createdAt: now - 300000 }
+            ]
+          }
+        ],
+        notifications: [
+          { id: 'n_1', toUid: 'u_aarav', senderId: 'u_priya', type: 'like', text: 'ने आपकी पोस्ट को लाइक किया।', isRead: false, createdAt: now - 600000 }
+        ],
+        lives: [],
+        reports: []
+      };
+    }
+
+    function loadDB() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          const fresh = createInitialDB();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+          return fresh;
+        }
+        return JSON.parse(raw);
+      } catch {
+        return createInitialDB();
+      }
+    }
+
+    let DB = loadDB();
+    function saveDB() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DB));
+      } catch {
+        showToast('फ़ोन स्टोरेज भर गया है, कृपया कुछ पुरानी पोस्ट हटाएँ।');
+      }
+    }
+
+    // ---------- ऐप UI स्टेट ----------
+    const UI = {
+      screen: 'home',
+      authMode: 'login',
+      profileUid: null,
+      profileTab: 'posts',
+      searchTab: 'explore',
+      searchQuery: '',
+      activeChatId: null,
+      reelsMuted: false,
+      reelsPaused: {},
+      activeLiveId: null,
+      adminTab: 'users',
+      activeCall: null,
+      liveStream: null,
+      callStream: null
+    };
+
+    const me = () => DB.users.find(u => u.uid === DB.currentUserId) || null;
+    const getUser = (uid) => DB.users.find(u => u.uid === uid) || null;
+    const uPhoto = (u) => u?.photoURL || makeAvatar(u?.name || 'Y', u?.isAdmin ? '#0f172a' : '#FF5A36');
+
+    function addNotif(toUid, type, text) {
+      const cur = me();
+      if (!cur || !toUid || toUid === cur.uid) return;
+      DB.notifications.unshift({
+        id: 'n_' + Date.now() + Math.random().toString(36).slice(2, 6),
+        toUid, senderId: cur.uid, type, text, isRead: false, createdAt: Date.now()
+      });
+    }
+
+    function canViewAuthor(author) {
+      const cur = me();
+      if (!author || !cur) return false;
+      if (cur.isAdmin || author.uid === cur.uid) return true;
+      if (author.blocked.includes(cur.uid)) return false;
+      if (!author.isPrivate) return true;
+      return author.followers.includes(cur.uid);
+    }
+
+    // 24 घंटे पुरानी स्टोरी स्वतः हटाना
+    function getActiveStories() {
+      const now = Date.now();
+      const valid = DB.stories.filter(s => s.expiresAt > now);
+      if (valid.length !== DB.stories.length) {
+        DB.stories = valid;
+        saveDB();
+      }
+      return valid.filter(s => canViewAuthor(getUser(s.authorId)));
+    }
+
+    // ---------- लॉगिन / साइनअप / पासवर्ड ----------
+    function setAuthMode(mode) { UI.authMode = mode; render(); }
+
+    function quickLogin(email) {
+      const user = DB.users.find(u => u.email === email);
+      if (!user) return;
+      if (user.isBanned) return showToast('यह अकाउंट प्रतिबंधित है।');
+      DB.currentUserId = user.uid;
+      user.isOnline = true; user.lastSeen = Date.now();
+      saveDB();
+      UI.screen = 'home';
+      render();
+      showToast(`स्वागत है, ${user.name}!`);
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const f = e.target;
+      if (UI.authMode === 'login') {
+        const idInput = f.identifier.value.trim().toLowerCase();
+        const pass = f.password.value;
+        const user = DB.users.find(u =>
+          (u.email.toLowerCase() === idInput || u.phone === idInput || u.username === idInput) && u.password === pass
+        );
+        if (!user) return showToast('ईमेल/मोबाइल या पासवर्ड गलत है।');
+        if (user.isBanned) return showToast('नियमों के उल्लंघन के कारण यह अकाउंट प्रतिबंधित है।');
+        DB.currentUserId = user.uid;
+        user.isOnline = true; user.lastSeen = Date.now();
+        saveDB();
+        UI.screen = 'home';
+        render();
+      } else if (UI.authMode === 'signup') {
+        const name = f.name.value.trim();
+        const username = f.username.value.trim().toLowerCase().replace(/[^a-z0-9._]/g, '');
+        const email = f.email.value.trim().toLowerCase();
+        const phone = f.phone.value.trim();
+        const password = f.password.value;
+        if (username.length < 3) return showToast('यूज़रनेम कम से कम 3 अक्षरों का रखें।');
+        if (DB.users.some(u => u.username === username)) return showToast('यह यूज़रनेम पहले से उपयोग में है।');
+        if (DB.users.some(u => u.email === email)) return showToast('यह ईमेल पहले से पंजीकृत है।');
+        const newUser = {
+          uid: 'u_' + Date.now(), name, username, email, phone, password,
+          bio: 'नमस्ते! मैं YAARI पर नया हूँ।', photoURL: '',
+          isPrivate: false, isAdmin: false, isBanned: false, isOnline: true, lastSeen: Date.now(),
+          followers: [], following: [], followRequests: [], friends: [], friendRequests: [], blocked: [], savedPosts: []
+        };
+        DB.users.push(newUser);
+        DB.currentUserId = newUser.uid;
+        saveDB();
+        UI.screen = 'home';
+        render();
+        showToast('आपका YAARI अकाउंट बन गया!');
+      } else {
+        const email = f.email.value.trim().toLowerCase();
+        const user = DB.users.find(u => u.email === email || u.phone === email);
+        if (!user) return showToast('इस ईमेल/मोबाइल से कोई अकाउंट नहीं मिला।');
+        const newP = f.newpass.value;
+        if (newP.length < 6) return showToast('नया पासवर्ड कम से कम 6 अक्षरों का रखें।');
+        user.password = newP;
+        saveDB();
+        UI.authMode = 'login';
+        render();
+        showToast('पासवर्ड सफलतापूर्वक रीसेट हो गया! अब लॉगिन करें।');
+      }
+    }
+
+    function logout() {
+      const cur = me();
+      if (cur) { cur.isOnline = false; cur.lastSeen = Date.now(); }
+      DB.currentUserId = null;
+      saveDB();
+      UI.activeChatId = null;
+      render();
+    }
+
+    // ---------- नेविगेशन ----------
+    function go(screen, param = null) {
+      UI.screen = screen;
+      if (screen === 'profile') UI.profileUid = param || me().uid;
+      if (screen !== 'chat') UI.activeChatId = null;
+      render();
+      window.scrollTo(0, 0);
+    }
+
+    function closeModal() {
+      document.getElementById('modal-root').innerHTML = '';
+    }
+
+    // ---------- पोस्ट, लाइक, कमेंट, शेयर, सेव, रिपोर्ट ----------
+    function toggleLikePost(postId) {
+      const cur = me(); const p = DB.posts.find(x => x.id === postId);
+      if (!p || !cur) return;
+      const idx = p.likes.indexOf(cur.uid);
+      if (idx >= 0) p.likes.splice(idx, 1);
+      else {
+        p.likes.push(cur.uid);
+        addNotif(p.authorId, 'like', 'ने आपकी पोस्ट को लाइक किया।');
+      }
+      saveDB(); render();
+    }
+
+    function toggleSavePost(postId) {
+      const cur = me();
+      const idx = cur.savedPosts.indexOf(postId);
+      if (idx >= 0) { cur.savedPosts.splice(idx, 1); showToast('सेव सूची से हटाया गया।'); }
+      else { cur.savedPosts.push(postId); showToast('पोस्ट सेव हो गई!'); }
+      saveDB(); render();
+    }
+
+    function shareContent(title, text) {
+      if (navigator.share) navigator.share({ title, text }).catch(() => {});
+      else {
+        navigator.clipboard?.writeText(text).catch(() => {});
+        showToast('शेयर लिंक कॉपी हो गया!');
+      }
+    }
+
+    function deletePost(postId) {
+      if (!confirm('क्या आप यह पोस्ट हटाना चाहते हैं?')) return;
+      DB.posts = DB.posts.filter(p => p.id !== postId);
+      saveDB(); closeModal(); render();
+      showToast('पोस्ट हटा दी गई।');
+    }
+
+    function reportContent(kind, id, authorId) {
+      const reason = prompt('रिपोर्ट करने का कारण लिखें (जैसे: गलत सामग्री, स्पैम):');
+      if (!reason || !reason.trim()) return;
+      DB.reports.unshift({
+        id: 'rep_' + Date.now(), kind, itemId: id, authorId,
+        reporterId: me().uid, reason: reason.trim(), status: 'pending', createdAt: Date.now()
+      });
+      saveDB();
+      showToast('रिपोर्ट एडमिन को भेज दी गई है। धन्यवाद!');
+    }
+
+    function openCommentsModal(kind, id) {
+      const item = kind === 'post' ? DB.posts.find(p => p.id === id) : DB.reels.find(r => r.id === id);
+      if (!item) return;
+      const cur = me();
+      const listHtml = item.comments.length === 0
+        ? '<p style="text-align:center;color:#94a3b8;font-size:13px;padding:20px;">अभी कोई कमेंट नहीं है। पहला कमेंट लिखें!</p>'
+        : item.comments.map(c => {
+            const u = getUser(c.authorId);
+            return `<div class="between" style="padding:8px 0;border-bottom:1px solid #f1f5f9;">
+              <div style="font-size:13px;">
+                <b onclick="closeModal();go('profile','${c.authorId}')" style="cursor:pointer;">${esc(u?.name || 'यूज़र')}:</b>
+                <span>${esc(c.text)}</span>
+              </div>
+              ${c.authorId === cur.uid ? `<button onclick="deleteComment('${kind}','${id}','${c.id}')" style="color:#ef4444;font-size:12px;">हटाएँ</button>` : ''}
+            </div>`;
+          }).join('');
+
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box card-pad">
+            <div class="between" style="margin-bottom:10px;">
+              <h3 style="margin:0;font-size:16px;">कमेंट्स (${item.comments.length})</h3>
+              <button onclick="closeModal()" style="font-size:20px;">✕</button>
+            </div>
+            <div style="max-height:260px;overflow-y:auto;margin-bottom:12px;">${listHtml}</div>
+            <form onsubmit="submitComment(event,'${kind}','${id}')" class="row">
+              <input name="text" class="input" placeholder="कमेंट लिखें..." required />
+              <button type="submit" class="btn btn-primary" style="width:auto;">भेजें</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function submitComment(e, kind, id) {
+      e.preventDefault();
+      const text = e.target.text.value.trim();
+      if (!text) return;
+      const item = kind === 'post' ? DB.posts.find(p => p.id === id) : DB.reels.find(r => r.id === id);
+      if (!item) return;
+      item.comments.push({ id: 'c_' + Date.now(), authorId: me().uid, text, createdAt: Date.now() });
+      addNotif(item.authorId, 'comment', `ने आपकी ${kind === 'post' ? 'पोस्ट' : 'रील'} पर कमेंट किया: "${text.slice(0, 35)}"`);
+      saveDB(); render(); openCommentsModal(kind, id);
+    }
+
+    function deleteComment(kind, id, cid) {
+      const item = kind === 'post' ? DB.posts.find(p => p.id === id) : DB.reels.find(r => r.id === id);
+      if (!item) return;
+      item.comments = item.comments.filter(c => c.id !== cid);
+      saveDB(); render(); openCommentsModal(kind, id);
+    }
+
+    // ---------- अपलोड (पोस्ट, स्टोरी, रील) ----------
+    function openCreateMenu() {
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box card-pad" style="display:flex;flex-direction:column;gap:10px;">
+            <div class="between"><h3 style="margin:0;">क्या साझा करना चाहते हैं?</h3><button onclick="closeModal()">✕</button></div>
+            <button onclick="openUploadModal('post')" class="btn btn-soft" style="justify-content:flex-start;">🖼️ फोटो या वीडियो पोस्ट बनाएँ</button>
+            <button onclick="openUploadModal('story')" class="btn btn-soft" style="justify-content:flex-start;">✨ 24 घंटे की स्टोरी लगाएँ</button>
+            <button onclick="openUploadModal('reel')" class="btn btn-soft" style="justify-content:flex-start;">🎬 नई रील अपलोड करें</button>
+          </div>
+        </div>`;
+    }
+
+    function openUploadModal(kind) {
+      const title = kind === 'post' ? 'नई पोस्ट बनाएँ' : kind === 'story' ? '24 घंटे की स्टोरी लगाएँ' : 'नई रील अपलोड करें';
+      const accept = kind === 'reel' ? 'video/*' : 'image/*,video/*';
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box card-pad">
+            <div class="between" style="margin-bottom:12px;">
+              <h3 style="margin:0;">${title}</h3>
+              <button onclick="closeModal()">✕</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+              <label class="btn btn-soft" style="text-align:center;">📁 गैलरी से चुनें
+                <input id="up-gal" type="file" accept="${accept}" class="hidden" onchange="previewUploadFile(this)" />
+              </label>
+              <label class="btn btn-soft" style="text-align:center;">📷 कैमरे से बनाएँ
+                <input id="up-cam" type="file" accept="${accept}" capture="environment" class="hidden" onchange="previewUploadFile(this)" />
+              </label>
+            </div>
+            <div id="up-preview" style="margin-bottom:12px;"></div>
+            <textarea id="up-caption" class="input" rows="2" placeholder="कैप्शन लिखें..."></textarea>
+            <div id="up-progress-wrap" class="hidden" style="margin-top:10px;">
+              <div class="between" style="font-size:12px;margin-bottom:4px;"><span>अपलोड हो रहा है...</span><span id="up-pct">0%</span></div>
+              <div class="progress-bar"><div id="up-fill" class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <button id="up-submit" onclick="processMediaUpload('${kind}')" class="btn btn-primary" style="margin-top:12px;" disabled>साझा करें</button>
+          </div>
+        </div>`;
+      window.__selectedUploadFile = null;
+    }
+
+    function previewUploadFile(input) {
+      const file = input.files?.[0];
+      if (!file) return;
+      window.__selectedUploadFile = file;
+      const url = URL.createObjectURL(file);
+      const isVid = file.type.startsWith('video/');
+      document.getElementById('up-preview').innerHTML = isVid
+        ? `<video src="${url}" controls style="width:100%;max-height:240px;border-radius:14px;background:#000;"></video>`
+        : `<img src="${url}" style="width:100%;max-height:240px;object-fit:contain;border-radius:14px;background:#000;" />`;
+      document.getElementById('up-submit').disabled = false;
+    }
+
+    async function processMediaUpload(kind) {
+      const file = window.__selectedUploadFile;
+      if (!file) return;
+      const caption = document.getElementById('up-caption').value.trim();
+      const wrap = document.getElementById('up-progress-wrap');
+      const fill = document.getElementById('up-fill');
+      const pct = document.getElementById('up-pct');
+      document.getElementById('up-submit').disabled = true;
+      wrap.classList.remove('hidden');
+
+      for (let p = 20; p <= 80; p += 30) {
+        fill.style.width = p + '%'; pct.textContent = p + '%';
+        await new Promise(r => setTimeout(r, 120));
+      }
+
+      const isVid = file.type.startsWith('video/');
+      let mediaUrl = '';
+      if (isVid) {
+        const key = 'idb:vid_' + Date.now();
+        await saveMediaBlob(key, file);
+        mediaUrl = key;
+      } else {
+        mediaUrl = await compressImage(file);
+      }
+
+      fill.style.width = '100%'; pct.textContent = '100%';
+      const cur = me();
+      const now = Date.now();
+
+      if (kind === 'post') {
+        DB.posts.unshift({
+          id: 'p_' + now, authorId: cur.uid, mediaUrl,
+          mediaType: isVid ? 'video' : 'image', caption, likes: [], comments: [], createdAt: now
+        });
+        UI.screen = 'home';
+      } else if (kind === 'story') {
+        DB.stories.push({
+          id: 's_' + now, authorId: cur.uid, mediaUrl,
+          mediaType: isVid ? 'video' : 'image', caption,
+          views: [], reactions: [], createdAt: now, expiresAt: now + 24 * 3600 * 1000
+        });
+        UI.screen = 'home';
+      } else if (kind === 'reel') {
+        DB.reels.unshift({
+          id: 'r_' + now, authorId: cur.uid, mediaUrl, isDemoArt: false,
+          caption, likes: [], comments: [], createdAt: now
+        });
+        UI.screen = 'reels';
+      }
+
+      saveDB(); closeModal(); render();
+      showToast('सफलतापूर्वक साझा किया गया!');
+    }
+
+    // ---------- स्टोरी व्यूअर (24 घंटे, देखने वाले, प्रतिक्रिया) ----------
+    function openStoryViewer(authorId, idx = 0) {
+      const list = getActiveStories().filter(s => s.authorId === authorId);
+      if (!list.length) return;
+      const st = list[idx] || list[0];
+      const author = getUser(st.authorId);
+      const cur = me();
+      const isMine = st.authorId === cur.uid;
+
+      if (!isMine && !st.views.some(v => v.uid === cur.uid)) {
+        st.views.unshift({ uid: cur.uid, viewedAt: Date.now() });
+        saveDB();
+      }
+
+      const mediaSrc = resolveMediaSrc(st.mediaUrl);
+      const mediaHtml = st.mediaType === 'video'
+        ? `<video src="${mediaSrc}" autoplay controls playsinline style="width:100%;max-height:60vh;background:#000;border-radius:14px;"></video>`
+        : `<img src="${mediaSrc}" style="width:100%;max-height:60vh;object-fit:contain;background:#000;border-radius:14px;" />`;
+
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box" style="background:#0f172a;color:#fff;padding:14px;">
+            <div style="display:flex;gap:4px;margin-bottom:10px;">
+              ${list.map((_, i) => `<div style="flex:1;height:4px;border-radius:9px;background:${i <= idx ? '#fff' : 'rgba(255,255,255,0.3)'};"></div>`).join('')}
+            </div>
+            <div class="between" style="margin-bottom:10px;">
+              <div class="row" onclick="closeModal();go('profile','${author.uid}')" style="cursor:pointer;">
+                <img src="${uPhoto(author)}" class="avatar" style="width:36px;height:36px;" />
+                <div>
+                  <div style="font-size:13px;font-weight:700;">${esc(author.name)}</div>
+                  <div style="font-size:11px;color:#94a3b8;">${timeAgo(st.createdAt)}</div>
+                </div>
+              </div>
+              <div class="row">
+                ${idx > 0 ? `<button onclick="openStoryViewer('${authorId}',${idx - 1})" class="btn btn-soft" style="padding:4px 9px;">◀</button>` : ''}
+                ${idx < list.length - 1 ? `<button onclick="openStoryViewer('${authorId}',${idx + 1})" class="btn btn-soft" style="padding:4px 9px;">▶</button>` : ''}
+                ${isMine ? `<button onclick="deleteStory('${st.id}')" style="color:#f87171;font-size:14px;padding:4px;">🗑️</button>` : ''}
+                <button onclick="closeModal()" style="color:#fff;font-size:18px;padding:4px;">✕</button>
+              </div>
+            </div>
+            ${mediaHtml}
+            ${st.caption ? `<p style="text-align:center;font-size:13px;margin:10px 0;">${esc(st.caption)}</p>` : ''}
+            ${isMine ? `
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+                <button onclick="showStoryStats('${st.id}','views')" class="btn" style="background:rgba(255,255,255,0.14);color:#fff;">👁️ देखा (${st.views.length})</button>
+                <button onclick="showStoryStats('${st.id}','reactions')" class="btn" style="background:rgba(255,255,255,0.14);color:#fff;">❤️ प्रतिक्रियाएँ (${st.reactions.length})</button>
+              </div>
+            ` : `
+              <div style="display:flex;justify-content:center;gap:10px;margin:10px 0;">
+                ${['❤️','🔥','😂','😍','👏'].map(em => `<button onclick="reactStory('${st.id}','${em}')" style="font-size:20px;background:rgba(255,255,255,0.15);border-radius:50%;width:38px;height:38px;">${em}</button>`).join('')}
+              </div>
+              <form onsubmit="event.preventDefault();reactStory('${st.id}',this.msg.value);this.reset();" class="row">
+                <input name="msg" class="input" style="background:rgba(255,255,255,0.14);color:#fff;border-color:rgba(255,255,255,0.2);" placeholder="स्टोरी पर प्रतिक्रिया लिखें..." required />
+                <button type="submit" class="btn btn-primary" style="width:auto;">भेजें</button>
+              </form>
+            `}
+          </div>
+        </div>`;
+    }
+
+    function reactStory(storyId, msg) {
+      if (!msg || !msg.trim()) return;
+      const st = DB.stories.find(s => s.id === storyId);
+      if (!st) return;
+      st.reactions.unshift({ uid: me().uid, message: msg.trim(), createdAt: Date.now() });
+      saveDB();
+      showToast('प्रतिक्रिया भेजी गई!');
+    }
+
+    function deleteStory(storyId) {
+      DB.stories = DB.stories.filter(s => s.id !== storyId);
+      saveDB(); closeModal(); render();
+      showToast('स्टोरी हटा दी गई।');
+    }
+
+    function showStoryStats(storyId, tab) {
+      const st = DB.stories.find(s => s.id === storyId);
+      if (!st) return;
+      const items = tab === 'views'
+        ? st.views.map(v => {
+            const u = getUser(v.uid);
+            return `<div class="between" style="padding:8px 0;border-bottom:1px solid #f1f5f9;"><b>${esc(u?.name || 'यूज़र')}</b><span style="font-size:11px;color:#64748b;">${timeAgo(v.viewedAt)}</span></div>`;
+          }).join('')
+        : st.reactions.map(r => {
+            const u = getUser(r.uid);
+            return `<div class="between" style="padding:8px 0;border-bottom:1px solid #f1f5f9;"><div><b>${esc(u?.name || 'यूज़र')}</b>: ${esc(r.message)}</div><span style="font-size:11px;color:#64748b;">${timeAgo(r.createdAt)}</span></div>`;
+          }).join('');
+
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box card-pad">
+            <div class="between" style="margin-bottom:10px;">
+              <h3 style="margin:0;">${tab === 'views' ? 'स्टोरी देखने वाले' : 'स्टोरी प्रतिक्रियाएँ'}</h3>
+              <button onclick="openStoryViewer('${st.authorId}')">✕</button>
+            </div>
+            ${items || '<p style="text-align:center;color:#94a3b8;">अभी कोई जानकारी नहीं है।</p>'}
+          </div>
+        </div>`;
+    }
+
+    // ---------- रील्स नियंत्रण ----------
+    function toggleReelPlay(reelId) {
+      const vid = document.getElementById('reel-vid-' + reelId);
+      if (!vid) return;
+      if (vid.paused) { vid.play().catch(() => {}); UI.reelsPaused[reelId] = false; }
+      else { vid.pause(); UI.reelsPaused[reelId] = true; }
+      const badge = document.getElementById('reel-play-badge-' + reelId);
+      if (badge) badge.classList.toggle('hidden', !vid.paused);
+    }
+
+    function toggleReelMute() {
+      UI.reelsMuted = !UI.reelsMuted;
+      document.querySelectorAll('.reel-video').forEach(v => { v.muted = UI.reelsMuted; });
+      render();
+    }
+
+    function toggleLikeReel(reelId) {
+      const cur = me(); const r = DB.reels.find(x => x.id === reelId);
+      if (!r) return;
+      const i = r.likes.indexOf(cur.uid);
+      if (i >= 0) r.likes.splice(i, 1);
+      else {
+        r.likes.push(cur.uid);
+        addNotif(r.authorId, 'like', 'ने आपकी रील को लाइक किया।');
+      }
+      saveDB(); render();
+    }
+
+    function deleteReel(reelId) {
+      if (!confirm('क्या आप यह रील हटाना चाहते हैं?')) return;
+      DB.reels = DB.reels.filter(r => r.id !== reelId);
+      saveDB(); render();
+    }
+
+    // ---------- प्रोफाइल, फॉलो, फ्रेंड रिक्वेस्ट, ब्लॉक ----------
+    function toggleFollow(targetUid) {
+      const cur = me(); const target = getUser(targetUid);
+      if (!cur || !target) return;
+      if (target.followers.includes(cur.uid)) {
+        target.followers = target.followers.filter(id => id !== cur.uid);
+        cur.following = cur.following.filter(id => id !== targetUid);
+      } else if (target.isPrivate) {
+        const idx = target.followRequests.indexOf(cur.uid);
+        if (idx >= 0) target.followRequests.splice(idx, 1);
+        else {
+          target.followRequests.push(cur.uid);
+          addNotif(targetUid, 'follow', 'ने आपको फॉलो अनुरोध भेजा है।');
+        }
+      } else {
+        target.followers.push(cur.uid);
+        cur.following.push(targetUid);
+        addNotif(targetUid, 'follow', 'ने आपको फॉलो करना शुरू किया।');
+      }
+      saveDB(); render();
+    }
+
+    function acceptFollowReq(fromUid) {
+      const cur = me(); const from = getUser(fromUid);
+      if (!cur || !from) return;
+      cur.followRequests = cur.followRequests.filter(id => id !== fromUid);
+      if (!cur.followers.includes(fromUid)) cur.followers.push(fromUid);
+      if (!from.following.includes(cur.uid)) from.following.push(cur.uid);
+      saveDB(); render();
+    }
+
+    function rejectFollowReq(fromUid) {
+      const cur = me();
+      cur.followRequests = cur.followRequests.filter(id => id !== fromUid);
+      saveDB(); render();
+    }
+
+    function toggleFriendAction(targetUid) {
+      const cur = me(); const target = getUser(targetUid);
+      if (!cur || !target) return;
+      if (cur.friends.includes(targetUid)) {
+        cur.friends = cur.friends.filter(id => id !== targetUid);
+        target.friends = target.friends.filter(id => id !== cur.uid);
+        showToast('मित्र सूची से हटाया गया।');
+      } else if (target.friendRequests.includes(cur.uid)) {
+        target.friendRequests = target.friendRequests.filter(id => id !== cur.uid);
+        showToast('फ्रेंड रिक्वेस्ट रद्द की गई।');
+      } else {
+        target.friendRequests.push(cur.uid);
+        addNotif(targetUid, 'friend_request', 'ने आपको फ्रेंड रिक्वेस्ट भेजा है।');
+        showToast('फ्रेंड रिक्वेस्ट भेजा गया!');
+      }
+      saveDB(); render();
+    }
+
+    function acceptFriendReq(fromUid) {
+      const cur = me(); const from = getUser(fromUid);
+      if (!cur || !from) return;
+      cur.friendRequests = cur.friendRequests.filter(id => id !== fromUid);
+      if (!cur.friends.includes(fromUid)) cur.friends.push(fromUid);
+      if (!from.friends.includes(cur.uid)) from.friends.push(cur.uid);
+      addNotif(fromUid, 'friend_accept', 'ने आपका फ्रेंड रिक्वेस्ट स्वीकार कर लिया है।');
+      saveDB(); render();
+      showToast('अब आप दोनों दोस्त हैं!');
+    }
+
+    function rejectFriendReq(fromUid) {
+      const cur = me();
+      cur.friendRequests = cur.friendRequests.filter(id => id !== fromUid);
+      saveDB(); render();
+    }
+
+    function toggleBlockUser(targetUid) {
+      const cur = me();
+      const idx = cur.blocked.indexOf(targetUid);
+      if (idx >= 0) { cur.blocked.splice(idx, 1); showToast('यूज़र अनलॉक कर दिया गया।'); }
+      else { cur.blocked.push(targetUid); showToast('यूज़र ब्लॉक कर दिया गया।'); }
+      saveDB(); render();
+    }
+
+    async function changeMyAvatar(input) {
+      const file = input.files?.[0];
+      if (!file) return;
+      me().photoURL = await compressImage(file, 320);
+      saveDB(); render();
+      showToast('प्रोफाइल फोटो अपडेट हो गई!');
+    }
+
+    function openEditProfileModal() {
+      const cur = me();
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box card-pad">
+            <div class="between" style="margin-bottom:12px;"><h3 style="margin:0;">प्रोफाइल बदलें</h3><button onclick="closeModal()">✕</button></div>
+            <form onsubmit="saveProfileEdit(event)" style="display:flex;flex-direction:column;gap:10px;">
+              <input name="name" class="input" value="${esc(cur.name)}" placeholder="पूरा नाम" required />
+              <textarea name="bio" class="input" rows="3" placeholder="अपना परिचय लिखें">${esc(cur.bio)}</textarea>
+              <input name="phone" class="input" value="${esc(cur.phone)}" placeholder="मोबाइल नंबर" />
+              <label class="between" style="padding:10px;background:#f8fafc;border-radius:12px;font-size:13px;font-weight:600;">
+                <span>प्राइवेट अकाउंट रखें</span>
+                <input name="isPrivate" type="checkbox" ${cur.isPrivate ? 'checked' : ''} />
+              </label>
+              <button type="submit" class="btn btn-primary">बदलाव सहेजें</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function saveProfileEdit(e) {
+      e.preventDefault();
+      const cur = me();
+      cur.name = e.target.name.value.trim();
+      cur.bio = e.target.bio.value.trim();
+      cur.phone = e.target.phone.value.trim();
+      cur.isPrivate = e.target.isPrivate.checked;
+      saveDB(); closeModal(); render();
+      showToast('प्रोफाइल सहेजी गई!');
+    }
+
+    function openPasswordModal() {
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box card-pad">
+            <div class="between" style="margin-bottom:12px;"><h3 style="margin:0;">पासवर्ड बदलें</h3><button onclick="closeModal()">✕</button></div>
+            <form onsubmit="saveNewPassword(event)" style="display:flex;flex-direction:column;gap:10px;">
+              <input name="oldp" type="password" class="input" placeholder="वर्तमान पासवर्ड" required />
+              <input name="newp" type="password" class="input" placeholder="नया पासवर्ड (कम से कम 6 अक्षर)" minlength="6" required />
+              <button type="submit" class="btn btn-primary">पासवर्ड अपडेट करें</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function saveNewPassword(e) {
+      e.preventDefault();
+      const cur = me();
+      if (e.target.oldp.value !== cur.password) return showToast('वर्तमान पासवर्ड गलत है।');
+      cur.password = e.target.newp.value;
+      saveDB(); closeModal();
+      showToast('पासवर्ड सफलतापूर्वक बदल दिया गया!');
+    }
+
+    function openPeopleModal(uid, kind) {
+      const u = getUser(uid);
+      if (!u) return;
+      const ids = kind === 'followers' ? u.followers : kind === 'following' ? u.following : u.friends;
+      const title = kind === 'followers' ? 'फॉलोअर्स' : kind === 'following' ? 'फॉलोइंग' : 'दोस्त';
+      const rows = ids.map(id => getUser(id)).filter(Boolean).map(p => `
+        <div onclick="closeModal();go('profile','${p.uid}')" class="row" style="padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+          <img src="${uPhoto(p)}" class="avatar" style="width:40px;height:40px;" />
+          <div><div style="font-size:14px;font-weight:700;">${esc(p.name)}</div><div style="font-size:12px;color:#64748b;">@${esc(p.username)}</div></div>
+        </div>`).join('');
+
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box card-pad">
+            <div class="between" style="margin-bottom:8px;"><h3 style="margin:0;">${title} (${ids.length})</h3><button onclick="closeModal()">✕</button></div>
+            ${rows || '<p style="text-align:center;color:#94a3b8;">सूची खाली है।</p>'}
+          </div>
+        </div>`;
+    }
+
+    // ---------- निजी चैट ----------
+    function openChatWith(partnerUid) {
+      const cur = me();
+      let chat = DB.chats.find(c => c.participants.includes(cur.uid) && c.participants.includes(partnerUid));
+      if (!chat) {
+        chat = { id: 'chat_' + Date.now(), participants: [cur.uid, partnerUid], messages: [] };
+        DB.chats.unshift(chat);
+        saveDB();
+      }
+      UI.activeChatId = chat.id;
+      UI.screen = 'chat';
+      render();
+    }
+
+    function sendChatText(e) {
+      e.preventDefault();
+      const text = e.target.msg.value.trim();
+      if (!text || !UI.activeChatId) return;
+      const chat = DB.chats.find(c => c.id === UI.activeChatId);
+      const cur = me();
+      const partnerId = chat.participants.find(id => id !== cur.uid);
+      chat.messages.push({ id: 'm_' + Date.now(), senderId: cur.uid, text, mediaUrl: '', mediaType: '', isRead: false, createdAt: Date.now() });
+      addNotif(partnerId, 'message', `ने आपको नया संदेश भेजा: "${text.slice(0, 35)}"`);
+      saveDB(); render();
+      setTimeout(() => { const b = document.getElementById('chat-msgs'); if (b) b.scrollTop = b.scrollHeight; }, 30);
+    }
+
+    async function sendChatMedia(input) {
+      const file = input.files?.[0];
+      if (!file || !UI.activeChatId) return;
+      const chat = DB.chats.find(c => c.id === UI.activeChatId);
+      const cur = me();
+      const partnerId = chat.participants.find(id => id !== cur.uid);
+      const isVid = file.type.startsWith('video/');
+      let mediaUrl = '';
+      if (isVid) {
+        const key = 'idb:chat_' + Date.now();
+        await saveMediaBlob(key, file);
+        mediaUrl = key;
+      } else {
+        mediaUrl = await compressImage(file, 720);
+      }
+      chat.messages.push({
+        id: 'm_' + Date.now(), senderId: cur.uid, text: '',
+        mediaUrl, mediaType: isVid ? 'video' : 'image', isRead: false, createdAt: Date.now()
+      });
+      addNotif(partnerId, 'message', isVid ? 'ने आपको एक वीडियो भेजा।' : 'ने आपको एक फोटो भेजी।');
+      saveDB(); render();
+    }
+
+    // ---------- ऑडियो / वीडियो कॉल (असली माइक व कैमरा स्ट्रीम के साथ) ----------
+    async function startCall(partnerUid, type) {
+      const p = getUser(partnerUid);
+      if (!p) return;
+      UI.activeCall = { partner: p, type, micMuted: false, camOff: type === 'audio', status: 'घंटी बज रही है...' };
+      renderCallModal();
+
+      try {
+        if (navigator.mediaDevices?.getUserMedia) {
+          UI.callStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: type === 'video' });
+          const v = document.getElementById('call-local-vid');
+          if (v && type === 'video') v.srcObject = UI.callStream;
+        }
+      } catch {}
+
+      setTimeout(() => {
+        if (UI.activeCall) {
+          UI.activeCall.status = 'कॉल जुड़ा हुआ है';
+          const stEl = document.getElementById('call-status-text');
+          if (stEl) stEl.textContent = (type === 'video' ? 'वीडियो कॉल' : 'ऑडियो कॉल') + ' • कॉल जुड़ा हुआ है';
+        }
+      }, 1500);
+    }
+
+    function renderCallModal() {
+      const c = UI.activeCall;
+      if (!c) return;
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" style="background:#020617;padding:0;">
+          <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:30px 20px;color:#fff;position:relative;">
+            ${c.type === 'video' ? `<video id="call-local-vid" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.85;"></video>` : ''}
+            <div style="position:relative;z-index:2;text-align:center;margin-top:30px;">
+              <img src="${uPhoto(c.partner)}" class="avatar" style="width:96px;height:96px;border:3px solid #FF5A36;margin-bottom:12px;" />
+              <h2 style="margin:0;font-size:24px;">${esc(c.partner.name)}</h2>
+              <p id="call-status-text" style="color:#cbd5e1;font-size:14px;">${c.type === 'video' ? 'वीडियो कॉल' : 'ऑडियो कॉल'} • ${c.status}</p>
+            </div>
+            <div class="row" style="position:relative;z-index:2;justify-content:center;gap:18px;margin-bottom:20px;">
+              <button onclick="toggleCallMic()" style="width:54px;height:54px;border-radius:50%;background:${c.micMuted ? '#fff' : 'rgba(255,255,255,0.2)'};color:${c.micMuted ? '#000' : '#fff'};font-size:20px;">${c.micMuted ? '🔇' : '🎙️'}</button>
+              ${c.type === 'video' ? `<button onclick="toggleCallCam()" style="width:54px;height:54px;border-radius:50%;background:${c.camOff ? '#fff' : 'rgba(255,255,255,0.2)'};color:${c.camOff ? '#000' : '#fff'};font-size:20px;">${c.camOff ? '🚫' : '📹'}</button>` : ''}
+              <button onclick="endCall()" style="width:62px;height:62px;border-radius:50%;background:#dc2626;color:#fff;font-size:22px;">📞</button>
+            </div>
+          </div>
+        </div>`;
+      if (UI.callStream && c.type === 'video') {
+        const v = document.getElementById('call-local-vid');
+        if (v) v.srcObject = UI.callStream;
+      }
+    }
+
+    function toggleCallMic() {
+      if (!UI.activeCall) return;
+      UI.activeCall.micMuted = !UI.activeCall.micMuted;
+      UI.callStream?.getAudioTracks().forEach(t => t.enabled = !UI.activeCall.micMuted);
+      renderCallModal();
+    }
+
+    function toggleCallCam() {
+      if (!UI.activeCall) return;
+      UI.activeCall.camOff = !UI.activeCall.camOff;
+      UI.callStream?.getVideoTracks().forEach(t => t.enabled = !UI.activeCall.camOff);
+      renderCallModal();
+    }
+
+    function endCall() {
+      UI.callStream?.getTracks().forEach(t => t.stop());
+      UI.callStream = null;
+      UI.activeCall = null;
+      closeModal();
+      showToast('कॉल समाप्त हो गया।');
+    }
+
+    // ---------- लाइव वीडियो स्ट्रीमिंग + लाइव कमेंट ----------
+    async function startLive(e) {
+      e.preventDefault();
+      const title = e.target.title.value.trim() || `${me().name} लाइव हैं!`;
+      const live = { id: 'live_' + Date.now(), hostId: me().uid, title, viewersCount: 1, comments: [], createdAt: Date.now() };
+      DB.lives.unshift(live);
+      saveDB();
+      UI.activeLiveId = live.id;
+      render();
+      try {
+        if (navigator.mediaDevices?.getUserMedia) {
+          UI.liveStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          const v = document.getElementById('live-cam-vid');
+          if (v) v.srcObject = UI.liveStream;
+        }
+      } catch {
+        showToast('कैमरा अनुमति नहीं मिली, ऑडियो/टेक्स्ट लाइव चालू है।');
+      }
+    }
+
+    function sendLiveComment(e) {
+      e.preventDefault();
+      const text = e.target.msg.value.trim();
+      const live = DB.lives.find(l => l.id === UI.activeLiveId);
+      if (!text || !live) return;
+      live.comments.push({ id: 'lc_' + Date.now(), authorId: me().uid, text });
+      saveDB(); render();
+    }
+
+    function stopOrLeaveLive() {
+      const live = DB.lives.find(l => l.id === UI.activeLiveId);
+      if (live && live.hostId === me().uid) {
+        DB.lives = DB.lives.filter(l => l.id !== live.id);
+        saveDB();
+      }
+      UI.liveStream?.getTracks().forEach(t => t.stop());
+      UI.liveStream = null;
+      UI.activeLiveId = null;
+      render();
+    }
+
+    // ---------- एडमिन पैनल ----------
+    function adminToggleBan(uid) {
+      const u = getUser(uid);
+      if (!u || u.uid === me().uid) return;
+      u.isBanned = !u.isBanned;
+      saveDB(); render();
+      showToast(u.isBanned ? 'यूज़र प्रतिबंधित कर दिया गया।' : 'यूज़र खाता पुनः चालू किया गया।');
+    }
+
+    function adminHandleReport(repId, action) {
+      const rep = DB.reports.find(r => r.id === repId);
+      if (!rep) return;
+      if (action === 'delete') {
+        if (rep.kind === 'post') DB.posts = DB.posts.filter(p => p.id !== rep.itemId);
+        if (rep.kind === 'reel') DB.reels = DB.reels.filter(r => r.id !== rep.itemId);
+        rep.status = 'resolved';
+        showToast('गलत सामग्री हटा दी गई।');
+      } else {
+        rep.status = 'dismissed';
+        showToast('शिकायत खारिज की गई।');
+      }
+      saveDB(); render();
+    }
+
+    // ---------- नोटिफिकेशन और सर्च हेल्पर्स ----------
+    function markAllNotifsRead() {
+      const cur = me();
+      DB.notifications.forEach(n => { if (n.toUid === cur.uid) n.isRead = true; });
+      saveDB(); render();
+    }
+
+    function filterSearch(val) {
+      UI.searchQuery = val;
+      const box = document.getElementById('search-results-box');
+      if (box) box.innerHTML = renderSearchResultsHtml();
+    }
+
+    // ---------- पोस्ट कार्ड रेंडरर ----------
+    function renderPostCard(p) {
+      const cur = me();
+      const author = getUser(p.authorId);
+      if (!author) return '';
+      const liked = p.likes.includes(cur.uid);
+      const saved = cur.savedPosts.includes(p.id);
+      const mSrc = resolveMediaSrc(p.mediaUrl);
+
+      return `
+        <article class="card">
+          <div class="between" style="padding:12px 14px;">
+            <div class="row" onclick="go('profile','${author.uid}')" style="cursor:pointer;">
+              <img src="${uPhoto(author)}" class="avatar" style="width:40px;height:40px;" />
+              <div>
+                <div style="font-size:14px;font-weight:700;">${esc(author.name)}</div>
+                <div style="font-size:11px;color:#64748b;">@${esc(author.username)} • ${timeAgo(p.createdAt)}</div>
+              </div>
+            </div>
+            ${author.uid === cur.uid
+              ? `<button onclick="deletePost('${p.id}')" title="हटाएँ" style="font-size:16px;">🗑️</button>`
+              : `<button onclick="reportContent('post','${p.id}','${author.uid}')" title="रिपोर्ट करें" style="font-size:15px;">🚩</button>`}
+          </div>
+          ${p.mediaType === 'video'
+            ? `<video src="${mSrc}" controls playsinline class="post-media"></video>`
+            : `<img src="${mSrc}" class="post-media" />`}
+          <div style="padding:12px 14px;">
+            <div class="between" style="margin-bottom:8px;">
+              <div class="row" style="gap:16px;">
+                <button onclick="toggleLikePost('${p.id}')" style="font-size:14px;font-weight:700;color:${liked ? '#E11D48' : '#334155'};">
+                  ${liked ? '❤️' : '🤍'} ${p.likes.length}
+                </button>
+                <button onclick="openCommentsModal('post','${p.id}')" style="font-size:14px;font-weight:700;color:#334155;">
+                  💬 ${p.comments.length}
+                </button>
+                <button onclick="shareContent('YAARI पोस्ट','${esc(author.name)} की पोस्ट: ${esc(p.caption)}')" style="font-size:16px;">📤</button>
+              </div>
+              <button onclick="toggleSavePost('${p.id}')" style="font-size:18px;">${saved ? '🔖' : '📑'}</button>
+            </div>
+            ${p.caption ? `<p style="margin:0;font-size:14px;line-height:1.45;"><b>${esc(author.name)}</b> ${esc(p.caption)}</p>` : ''}
+          </div>
+        </article>`;
+    }
+
+    function openPostDetailModal(postId) {
+      const p = DB.posts.find(x => x.id === postId);
+      if (!p) return showToast('यह पोस्ट उपलब्ध नहीं है।');
+      document.getElementById('modal-root').innerHTML = `
+        <div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+          <div class="modal-box" style="background:transparent;box-shadow:none;">
+            <div style="text-align:right;margin-bottom:6px;"><button onclick="closeModal()" style="background:#fff;border-radius:50%;width:34px;height:34px;font-weight:800;">✕</button></div>
+            ${renderPostCard(p)}
+          </div>
+        </div>`;
+    }
+
+    // ---------- स्क्रीन रेंडरर्स ----------
+    function renderAuthScreen() {
+      const m = UI.authMode;
+      return `
+        <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#fff7ed,#fff1f2,#f5f3ff);">
+          <div class="card card-pad" style="width:100%;max-width:420px;padding:24px;">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div class="logo" style="justify-content:center;">
+                <div class="logo-badge" style="width:46px;height:46px;font-size:22px;">Y</div>
+                <span class="logo-text" style="font-size:32px;">YAARI</span>
+              </div>
+              <p style="color:#64748b;font-size:13px;margin:8px 0 0;">
+                ${m === 'login' ? 'अपने दोस्तों से जुड़ें, यादगार पल साझा करें' : m === 'signup' ? 'YAARI पर नया अकाउंट बनाएँ' : 'अपना पासवर्ड रीसेट करें'}
+              </p>
+            </div>
+
+            <form onsubmit="handleAuthSubmit(event)" style="display:flex;flex-direction:column;gap:10px;">
+              ${m === 'signup' ? `
+                <input name="name" class="input" placeholder="पूरा नाम" required />
+                <input name="username" class="input" placeholder="यूज़रनेम (जैसे: rohit_12)" required />
+                <input name="phone" class="input" placeholder="मोबाइल नंबर (वैकल्पिक)" />
+              ` : ''}
+              <input name="email" ${m === 'login' ? 'class="hidden"' : ''} class="input" type="email" placeholder="ईमेल पता" ${m !== 'login' ? 'required' : ''} />
+              ${m === 'login' ? `<input name="identifier" class="input" placeholder="ईमेल, मोबाइल नंबर या यूज़रनेम" required />` : ''}
+              ${m !== 'forgot' ? `<input name="password" class="input" type="password" placeholder="पासवर्ड" minlength="6" required />` : ''}
+              ${m === 'forgot' ? `<input name="newpass" class="input" type="password" placeholder="नया पासवर्ड (कम से कम 6 अक्षर)" minlength="6" required />` : ''}
+
+              ${m === 'login' ? `<div style="text-align:right;"><button type="button" onclick="setAuthMode('forgot')" style="color:#E11D48;font-size:12px;font-weight:700;">पासवर्ड भूल गए?</button></div>` : ''}
+              <button type="submit" class="btn btn-primary" style="padding:13px;">
+                ${m === 'login' ? 'लॉगिन करें' : m === 'signup' ? 'नया अकाउंट बनाएँ' : 'पासवर्ड बदलें'}
+              </button>
+            </form>
+
+            <div style="text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid #f1f5f9;font-size:13px;">
+              ${m === 'login'
+                ? `अकाउंट नहीं है? <button onclick="setAuthMode('signup')" style="color:#FF5A36;font-weight:800;">नया अकाउंट बनाएँ</button>`
+                : `पहले से अकाउंट है? <button onclick="setAuthMode('login')" style="color:#FF5A36;font-weight:800;">लॉगिन करें</button>`}
+            </div>
+
+            <div style="margin-top:16px;padding:12px;background:#f8fafc;border-radius:16px;border:1px solid #e2e8f0;">
+              <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:8px;text-align:center;">⚡ 1-क्लिक में तुरंत टेस्ट लॉगिन करें (पासवर्ड: 123456)</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+                <button onclick="quickLogin('aarav@yaari.in')" class="btn btn-soft" style="padding:8px 4px;font-size:11px;">आरव</button>
+                <button onclick="quickLogin('priya@yaari.in')" class="btn btn-soft" style="padding:8px 4px;font-size:11px;">प्रिया</button>
+                <button onclick="quickLogin('admin@yaari.in')" class="btn btn-dark" style="padding:8px 4px;font-size:11px;">एडमिन</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderHome() {
+      const cur = me();
+      const stories = getActiveStories();
+      const myStories = stories.filter(s => s.authorId === cur.uid);
+      const otherAuthorIds = [...new Set(stories.filter(s => s.authorId !== cur.uid).map(s => s.authorId))];
+
+      const storyBarHtml = `
+        <div class="card">
+          <div class="stories-row">
+            <div class="story-item">
+              <div class="story-ring ${myStories.length ? '' : 'empty'}" onclick="${myStories.length ? `openStoryViewer('${cur.uid}')` : `openUploadModal('story')`}" style="cursor:pointer;">
+                <img src="${uPhoto(cur)}" />
+                <button onclick="event.stopPropagation();openUploadModal('story')" class="story-plus">+</button>
+              </div>
+              <div style="font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">आपकी स्टोरी</div>
+            </div>
+            ${otherAuthorIds.map(aid => {
+              const u = getUser(aid);
+              const uStories = stories.filter(s => s.authorId === aid);
+              const allSeen = uStories.every(s => s.views.some(v => v.uid === cur.uid));
+              return `
+                <div class="story-item" onclick="openStoryViewer('${aid}')" style="cursor:pointer;">
+                  <div class="story-ring ${allSeen ? 'seen' : ''}">
+                    <img src="${uPhoto(u)}" />
+                  </div>
+                  <div style="font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(u.name.split(' ')[0])}</div>
+                </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+
+      const feedPosts = DB.posts.filter(p => canViewAuthor(getUser(p.authorId)));
+      const postsHtml = feedPosts.length
+        ? feedPosts.map(renderPostCard).join('')
+        : `<div class="card card-pad" style="text-align:center;"><p>अभी कोई पोस्ट नहीं है।</p><button onclick="openUploadModal('post')" class="btn btn-primary" style="width:auto;">पहली पोस्ट बनाएँ</button></div>`;
+
+      return storyBarHtml + postsHtml;
+    }
+
+    function renderSearchResultsHtml() {
+      const q = UI.searchQuery.trim().toLowerCase();
+      if (UI.searchTab === 'explore') {
+        const list = DB.posts
+          .filter(p => canViewAuthor(getUser(p.authorId)))
+          .filter(p => !q || p.caption.toLowerCase().includes(q) || getUser(p.authorId)?.name.toLowerCase().includes(q))
+          .sort((a, b) => b.likes.length - a.likes.length);
+        return list.length
+          ? `<div class="card"><div class="grid-3">${list.map(p => {
+              const s = resolveMediaSrc(p.mediaUrl);
+              return `<div class="grid-cell" onclick="openPostDetailModal('${p.id}')" style="cursor:pointer;">${p.mediaType === 'video' ? `<video src="${s}"></video>` : `<img src="${s}" />`}</div>`;
+            }).join('')}</div></div>`
+          : `<div class="card card-pad" style="text-align:center;color:#64748b;">कोई पोस्ट नहीं मिली।</div>`;
+      } else {
+        const users = DB.users.filter(u => !q || u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q));
+        return `<div class="card">${users.map(u => `
+          <div onclick="go('profile','${u.uid}')" class="between" style="padding:12px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+            <div class="row">
+              <img src="${uPhoto(u)}" class="avatar" style="width:44px;height:44px;" />
+              <div><div style="font-size:14px;font-weight:700;">${esc(u.name)}</div><div style="font-size:12px;color:#64748b;">@${esc(u.username)}</div></div>
+            </div>
+            <span style="font-size:12px;font-weight:700;color:#FF5A36;">प्रोफाइल देखें</span>
+          </div>`).join('') || '<div class="card-pad" style="text-align:center;">कोई व्यक्ति नहीं मिला।</div>'}</div>`;
+      }
+    }
+
+    function renderSearch() {
+      return `
+        <input class="input" style="margin-bottom:10px;" value="${esc(UI.searchQuery)}" oninput="filterSearch(this.value)" placeholder="🔍 लोगों, फोटो या वीडियो को खोजें..." />
+        <div class="tabs">
+          <button onclick="UI.searchTab='explore';render();" class="tab-btn ${UI.searchTab === 'explore' ? 'active' : ''}">🔥 लोकप्रिय पोस्ट</button>
+          <button onclick="UI.searchTab='users';render();" class="tab-btn ${UI.searchTab === 'users' ? 'active' : ''}">👥 लोग खोजें</button>
+        </div>
+        <div id="search-results-box">${renderSearchResultsHtml()}</div>`;
+    }
+
+    function renderReels() {
+      const cur = me();
+      const reels = DB.reels.filter(r => canViewAuthor(getUser(r.authorId)));
+      return `
+        <div class="reels-wrap">
+          <div class="between" style="position:fixed;top:0;left:0;right:0;z-index:30;padding:12px 16px;background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);color:#fff;max-width:560px;margin:0 auto;">
+            <span style="font-weight:900;font-size:18px;">YAARI रील्स</span>
+            <button onclick="openUploadModal('reel')" class="btn" style="background:var(--grad);color:#fff;padding:7px 14px;font-size:12px;">+ रील बनाएँ</button>
+          </div>
+          ${reels.length === 0 ? `
+            <div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;gap:10px;">
+              <p>अभी कोई रील नहीं है</p>
+              <button onclick="openUploadModal('reel')" class="btn btn-primary" style="width:auto;">पहली रील अपलोड करें</button>
+            </div>
+          ` : reels.map(r => {
+            const author = getUser(r.authorId);
+            const liked = r.likes.includes(cur.uid);
+            const mSrc = resolveMediaSrc(r.mediaUrl);
+            return `
+              <div class="reel-slide">
+                ${r.isDemoArt
+                  ? `<img src="${mSrc}" style="width:100%;height:100%;object-fit:contain;" />`
+                  : `<video id="reel-vid-${r.id}" src="${mSrc}" class="reel-video" autoplay loop playsinline ${UI.reelsMuted ? 'muted' : ''} onclick="toggleReelPlay('${r.id}')"></video>`}
+                <div id="reel-play-badge-${r.id}" class="hidden" style="position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;pointer-events:none;">▶</div>
+                <div class="reel-actions">
+                  <button onclick="toggleLikeReel('${r.id}')" class="reel-act-btn"><div class="reel-act-circle">${liked ? '❤️' : '🤍'}</div><span>${r.likes.length}</span></button>
+                  <button onclick="openCommentsModal('reel','${r.id}')" class="reel-act-btn"><div class="reel-act-circle">💬</div><span>${r.comments.length}</span></button>
+                  <button onclick="shareContent('YAARI रील','${esc(author.name)} की रील देखें')" class="reel-act-btn"><div class="reel-act-circle">📤</div><span>शेयर</span></button>
+                  <button onclick="toggleReelMute()" class="reel-act-btn"><div class="reel-act-circle">${UI.reelsMuted ? '🔇' : '🔊'}</div><span>${UI.reelsMuted ? 'म्यूट' : 'आवाज़'}</span></button>
+                  ${author.uid === cur.uid
+                    ? `<button onclick="deleteReel('${r.id}')" class="reel-act-btn"><div class="reel-act-circle">🗑️</div></button>`
+                    : `<button onclick="reportContent('reel','${r.id}','${author.uid}')" class="reel-act-btn"><div class="reel-act-circle">🚩</div></button>`}
+                </div>
+                <div style="position:absolute;left:14px;right:76px;bottom:24px;color:#fff;text-shadow:0 1px 4px #000;">
+                  <div class="row" onclick="go('profile','${author.uid}')" style="cursor:pointer;margin-bottom:6px;">
+                    <img src="${uPhoto(author)}" class="avatar" style="width:38px;height:38px;border-color:#fff;" />
+                    <div><b>${esc(author.name)}</b><div style="font-size:11px;opacity:0.85;">@${esc(author.username)}</div></div>
+                  </div>
+                  ${r.caption ? `<p style="margin:0;font-size:13px;">${esc(r.caption)}</p>` : ''}
+                </div>
+              </div>`;
+          }).join('')}
+        </div>`;
+    }
+
+    function renderNotifications() {
+      const cur = me();
+      const myNotifs = DB.notifications.filter(n => n.toUid === cur.uid);
+      return `
+        <div class="between" style="margin-bottom:12px;">
+          <h2 style="margin:0;font-size:18px;">नोटिफिकेशन</h2>
+          ${myNotifs.some(n => !n.isRead) ? `<button onclick="markAllNotifsRead()" style="color:#FF5A36;font-size:12px;font-weight:700;">✓ सभी पढ़ा हुआ चिह्नित करें</button>` : ''}
+        </div>
+        ${cur.friendRequests.length ? `
+          <div class="card card-pad">
+            <h4 style="margin:0 0 10px;font-size:14px;">फ्रेंड रिक्वेस्ट (${cur.friendRequests.length})</h4>
+            ${cur.friendRequests.map(fid => {
+              const u = getUser(fid); if (!u) return '';
+              return `<div class="between" style="margin-bottom:8px;">
+                <div class="row" onclick="go('profile','${u.uid}')" style="cursor:pointer;">
+                  <img src="${uPhoto(u)}" class="avatar" style="width:40px;height:40px;" />
+                  <div><b>${esc(u.name)}</b><div style="font-size:11px;color:#64748b;">@${esc(u.username)}</div></div>
+                </div>
+                <div class="row"><button onclick="acceptFriendReq('${u.uid}')" class="btn" style="background:#10b981;color:#fff;padding:6px 10px;">स्वीकार</button><button onclick="rejectFriendReq('${u.uid}')" class="btn btn-soft" style="padding:6px 10px;">✕</button></div>
+              </div>`;
+            }).join('')}
+          </div>` : ''}
+        <div class="card">
+          ${myNotifs.length === 0 ? `<div class="card-pad" style="text-align:center;color:#64748b;">अभी कोई नोटिफिकेशन नहीं है।</div>` : myNotifs.map(n => {
+            const s = getUser(n.senderId);
+            return `<div onclick="n_click('${n.id}','${n.type}','${n.senderId}')" class="between" style="padding:12px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer;background:${n.isRead ? '#fff' : '#fff7ed'};">
+              <div class="row">
+                <img src="${uPhoto(s)}" class="avatar" style="width:40px;height:40px;" />
+                <div style="font-size:13px;"><b>${esc(s?.name || 'यूज़र')}</b> ${esc(n.text)}<div style="font-size:11px;color:#94a3b8;">${timeAgo(n.createdAt)}</div></div>
+              </div>
+              ${!n.isRead ? `<span style="width:9px;height:9px;border-radius:50%;background:#FF5A36;"></span>` : ''}
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
+
+    function n_click(nid, type, sid) {
+      const n = DB.notifications.find(x => x.id === nid);
+      if (n) { n.isRead = true; saveDB(); }
+      if (type === 'message') openChatWith(sid); else go('profile', sid);
+    }
+
+    function renderChat() {
+      const cur = me();
+      if (UI.activeChatId) {
+        const chat = DB.chats.find(c => c.id === UI.activeChatId);
+        const partnerId = chat.participants.find(id => id !== cur.uid);
+        const partner = getUser(partnerId);
+        let changed = false;
+        chat.messages.forEach(m => { if (m.senderId !== cur.uid && !m.isRead) { m.isRead = true; changed = true; } });
+        if (changed) saveDB();
+        const blocked = cur.blocked.includes(partnerId) || partner.blocked.includes(cur.uid);
+
+        return `
+          <div class="chat-box">
+            <div class="between" style="padding:10px 14px;border-bottom:1px solid var(--border);">
+              <div class="row">
+                <button onclick="UI.activeChatId=null;render();" style="font-size:20px;padding:4px;">←</button>
+                <div class="row" onclick="go('profile','${partner.uid}')" style="cursor:pointer;">
+                  <img src="${uPhoto(partner)}" class="avatar" style="width:38px;height:38px;" />
+                  <div>
+                    <div style="font-size:14px;font-weight:700;">${esc(partner.name)}</div>
+                    <div style="font-size:11px;color:#64748b;">${partner.isOnline ? '<span class="online-dot"></span> ऑनलाइन' : `अंतिम बार: ${timeAgo(partner.lastSeen)}`}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <button onclick="startCall('${partner.uid}','audio')" class="icon-btn" title="ऑडियो कॉल">📞</button>
+                <button onclick="startCall('${partner.uid}','video')" class="icon-btn" title="वीडियो कॉल">📹</button>
+              </div>
+            </div>
+
+            <div id="chat-msgs" class="chat-messages">
+              ${chat.messages.map(m => {
+                const mine = m.senderId === cur.uid;
+                const ms = resolveMediaSrc(m.mediaUrl);
+                return `<div class="bubble ${mine ? 'me' : 'them'}">
+                  ${m.mediaUrl ? (m.mediaType === 'video' ? `<video src="${ms}" controls style="max-width:220px;border-radius:10px;"></video>` : `<img src="${ms}" style="max-width:220px;border-radius:10px;" />`) : ''}
+                  ${m.text ? `<div>${esc(m.text)}</div>` : ''}
+                  <div style="font-size:10px;opacity:0.8;text-align:right;margin-top:2px;">
+                    ${timeAgo(m.createdAt)} ${mine ? (m.isRead ? '<span style="color:#bae6fd;">✓✓</span>' : '✓') : ''}
+                  </div>
+                </div>`;
+              }).join('') || '<p style="text-align:center;color:#94a3b8;font-size:12px;">नमस्ते कहकर बातचीत शुरू करें!</p>'}
+            </div>
+
+            ${blocked ? `<div style="padding:12px;text-align:center;background:#f1f5f9;font-size:12px;">इस बातचीत में संदेश नहीं भेजे जा सकते।</div>` : `
+              <form onsubmit="sendChatText(event)" class="row" style="padding:10px;border-top:1px solid var(--border);background:#fff;">
+                <label class="icon-btn" title="फोटो/वीडियो भेजें">🖼️
+                  <input type="file" accept="image/*,video/*" class="hidden" onchange="sendChatMedia(this)" />
+                </label>
+                <input name="msg" class="input" placeholder="संदेश लिखें..." autocomplete="off" />
+                <button type="submit" class="btn btn-primary" style="width:auto;">भेजें</button>
+              </form>`}
+          </div>`;
+      }
+
+      const myChats = DB.chats.filter(c => c.participants.includes(cur.uid));
+      const others = DB.users.filter(u => u.uid !== cur.uid);
+      return `
+        <div class="between" style="margin-bottom:12px;">
+          <h2 style="margin:0;font-size:18px;">निजी चैट</h2>
+        </div>
+        <div class="card">
+          ${myChats.map(c => {
+            const pid = c.participants.find(id => id !== cur.uid);
+            const p = getUser(pid); if (!p) return '';
+            const last = c.messages[c.messages.length - 1];
+            const unread = c.messages.filter(m => m.senderId !== cur.uid && !m.isRead).length;
+            return `<div onclick="UI.activeChatId='${c.id}';render();" class="between" style="padding:12px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+              <div class="row">
+                <img src="${uPhoto(p)}" class="avatar" style="width:46px;height:46px;" />
+                <div>
+                  <div style="font-size:14px;font-weight:700;">${esc(p.name)} ${p.isOnline ? '<span class="online-dot"></span>' : ''}</div>
+                  <div style="font-size:12px;color:#64748b;">${last ? (last.text ? esc(last.text.slice(0, 32)) : '📷 मीडिया') : 'बातचीत शुरू करें'}</div>
+                </div>
+              </div>
+              ${unread ? `<span class="badge" style="position:static;">${unread}</span>` : ''}
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="card card-pad">
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;">नए व्यक्ति से चैट शुरू करें</div>
+          ${others.map(u => `
+            <div onclick="openChatWith('${u.uid}')" class="between" style="padding:8px 0;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+              <div class="row"><img src="${uPhoto(u)}" class="avatar" style="width:36px;height:36px;" /><span><b>${esc(u.name)}</b> (@${esc(u.username)})</span></div>
+              <span style="color:#FF5A36;font-size:12px;font-weight:700;">चैट करें</span>
+            </div>`).join('')}
+        </div>`;
+    }
+
+    function renderLive() {
+      const cur = me();
+      if (UI.activeLiveId) {
+        const live = DB.lives.find(l => l.id === UI.activeLiveId);
+        if (!live) { UI.activeLiveId = null; return renderLive(); }
+        const host = getUser(live.hostId);
+        return `
+          <div style="position:fixed;inset:0;z-index:55;background:#000;color:#fff;display:flex;flex-direction:column;justify-content:space-between;">
+            <video id="live-cam-vid" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+            <div class="between" style="position:relative;z-index:2;padding:14px;background:linear-gradient(to bottom,rgba(0,0,0,0.75),transparent);">
+              <div class="row">
+                <img src="${uPhoto(host)}" class="avatar" style="width:38px;height:38px;border-color:#E11D48;" />
+                <div><b>${esc(host.name)}</b><div style="font-size:11px;">${esc(live.title)}</div></div>
+              </div>
+              <div class="row">
+                <span style="background:#E11D48;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;">लाइव</span>
+                <span style="background:rgba(0,0,0,0.55);padding:4px 10px;border-radius:99px;font-size:11px;">👁️ ${live.viewersCount}</span>
+                <button onclick="stopOrLeaveLive()" class="btn" style="background:#dc2626;color:#fff;padding:6px 12px;font-size:12px;">${live.hostId === cur.uid ? 'लाइव समाप्त' : 'बाहर निकलें'}</button>
+              </div>
+            </div>
+            <div style="position:relative;z-index:2;padding:14px;background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);">
+              <div style="max-height:180px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:6px;">
+                ${live.comments.map(c => `<div style="background:rgba(0,0,0,0.5);padding:6px 10px;border-radius:12px;font-size:12px;width:fit-content;"><b style="color:#fdba74;">${esc(getUser(c.authorId)?.name)}:</b> ${esc(c.text)}</div>`).join('')}
+              </div>
+              <form onsubmit="sendLiveComment(event)" class="row">
+                <input name="msg" class="input" style="background:rgba(255,255,255,0.18);color:#fff;border-color:rgba(255,255,255,0.25);" placeholder="लाइव कमेंट लिखें..." required />
+                <button type="submit" class="btn btn-primary" style="width:auto;">भेजें</button>
+              </form>
+            </div>
+          </div>`;
+      }
+
+      return `
+        <form onsubmit="startLive(event)" class="card card-pad" style="background:var(--grad);color:#fff;">
+          <h2 style="margin:0 0 6px;font-size:18px;">📡 लाइव वीडियो शुरू करें</h2>
+          <p style="margin:0 0 12px;font-size:12px;opacity:0.9;">अपने दोस्तों के साथ लाइव जुड़ें और लाइव कमेंट प्राप्त करें।</p>
+          <div class="row">
+            <input name="title" class="input" placeholder="लाइव वीडियो का शीर्षक लिखें..." />
+            <button type="submit" class="btn btn-dark" style="white-space:nowrap;">लाइव जाएँ</button>
+          </div>
+        </form>
+        <h3 style="font-size:14px;margin:12px 4px;">चल रहे लाइव (${DB.lives.length})</h3>
+        <div class="card">
+          ${DB.lives.length === 0 ? `<div class="card-pad" style="text-align:center;color:#64748b;">अभी कोई लाइव प्रसारण नहीं चल रहा है।</div>` : DB.lives.map(l => {
+            const h = getUser(l.hostId);
+            return `<div onclick="UI.activeLiveId='${l.id}';l_join('${l.id}')" class="between" style="padding:12px 14px;border-bottom:1px solid #f1f5f9;cursor:pointer;">
+              <div class="row"><img src="${uPhoto(h)}" class="avatar" style="width:44px;height:44px;border-color:#E11D48;" /><div><b>${esc(h.name)}</b><div style="font-size:12px;color:#64748b;">${esc(l.title)}</div></div></div>
+              <span style="background:#E11D48;color:#fff;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:800;">देखें</span>
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
+
+    function l_join(lid) {
+      const l = DB.lives.find(x => x.id === lid);
+      if (l) { l.viewersCount++; saveDB(); }
+      UI.activeLiveId = lid; render();
+    }
+
+    function renderAdmin() {
+      const pending = DB.reports.filter(r => r.status === 'pending').length;
+      return `
+        <div class="card card-pad" style="background:#0f172a;color:#fff;">
+          <h2 style="margin:0 0 12px;font-size:18px;">🛡️ YAARI एडमिन पैनल</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center;">
+            <div style="background:rgba(255,255,255,0.1);padding:12px;border-radius:14px;"><div style="font-size:22px;font-weight:900;">${DB.users.length}</div><div style="font-size:11px;">कुल यूज़र</div></div>
+            <div style="background:rgba(255,255,255,0.1);padding:12px;border-radius:14px;"><div style="font-size:22px;font-weight:900;color:#fcd34d;">${pending}</div><div style="font-size:11px;">लंबित शिकायतें</div></div>
+          </div>
+        </div>
+        <div class="tabs">
+          <button onclick="UI.adminTab='users';render();" class="tab-btn ${UI.adminTab === 'users' ? 'active' : ''}">यूज़र प्रबंधन</button>
+          <button onclick="UI.adminTab='reports';render();" class="tab-btn ${UI.adminTab === 'reports' ? 'active' : ''}">रिपोर्ट्स (${DB.reports.length})</button>
+        </div>
+        <div class="card">
+          ${UI.adminTab === 'users' ? DB.users.map(u => `
+            <div class="between" style="padding:12px 14px;border-bottom:1px solid #f1f5f9;">
+              <div class="row" onclick="go('profile','${u.uid}')" style="cursor:pointer;">
+                <img src="${uPhoto(u)}" class="avatar" style="width:40px;height:40px;" />
+                <div><b>${esc(u.name)}</b><div style="font-size:11px;color:#64748b;">@${esc(u.username)} • ${u.isBanned ? 'प्रतिबंधित' : 'सक्रिय'}</div></div>
+              </div>
+              ${u.uid !== me().uid ? `<button onclick="adminToggleBan('${u.uid}')" class="btn ${u.isBanned ? 'btn-soft' : 'btn-danger'}" style="padding:6px 10px;font-size:11px;">${u.isBanned ? 'चालू करें' : 'प्रतिबंधित करें'}</button>` : ''}
+            </div>`).join('')
+          : (DB.reports.length === 0 ? `<div class="card-pad" style="text-align:center;color:#64748b;">कोई शिकायत नहीं है।</div>` : DB.reports.map(r => `
+            <div style="padding:14px;border-bottom:1px solid #f1f5f9;">
+              <div class="between"><b>${r.kind === 'reel' ? 'रील रिपोर्ट' : 'पोस्ट रिपोर्ट'}</b><span style="font-size:11px;font-weight:700;">${r.status === 'pending' ? 'लंबित' : r.status === 'resolved' ? 'हटाया गया' : 'खारिज'}</span></div>
+              <p style="margin:6px 0;font-size:13px;">कारण: ${esc(r.reason)}</p>
+              ${r.status === 'pending' ? `<div class="row"><button onclick="adminHandleReport('${r.id}','delete')" class="btn btn-danger" style="flex:1;padding:8px;">सामग्री हटाएँ</button><button onclick="adminHandleReport('${r.id}','dismiss')" class="btn btn-soft" style="padding:8px;">अनदेखा करें</button></div>` : ''}
+            </div>`).join(''))}
+        </div>`;
+    }
+
+    function renderProfile() {
+      const cur = me();
+      const target = getUser(UI.profileUid || cur.uid) || cur;
+      const isMine = target.uid === cur.uid;
+      const myPosts = DB.posts.filter(p => p.authorId === target.uid);
+      const canSee = canViewAuthor(target);
+      const isFol = target.followers.includes(cur.uid);
+      const reqFol = target.followRequests.includes(cur.uid);
+      const isFri = cur.friends.includes(target.uid);
+      const reqFri = target.friendRequests.includes(cur.uid);
+      const isBlk = cur.blocked.includes(target.uid);
+
+      return `
+        <div class="card card-pad">
+          <div class="row" style="gap:16px;margin-bottom:12px;">
+            <div style="position:relative;">
+              <img src="${uPhoto(target)}" class="avatar" style="width:76px;height:76px;border-color:#FF5A36;" />
+              ${isMine ? `<label style="position:absolute;bottom:0;right:0;width:26px;height:26px;border-radius:50%;background:#FF5A36;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;">📷<input type="file" accept="image/*" class="hidden" onchange="changeMyAvatar(this)" /></label>` : ''}
+            </div>
+            <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;">
+              <div><b style="font-size:17px;">${myPosts.length}</b><div style="font-size:11px;color:#64748b;">पोस्ट</div></div>
+              <button onclick="if(${canSee})openPeopleModal('${target.uid}','followers')"><b style="font-size:17px;">${target.followers.length}</b><div style="font-size:11px;color:#64748b;">फॉलोअर्स</div></button>
+              <button onclick="if(${canSee})openPeopleModal('${target.uid}','following')"><b style="font-size:17px;">${target.following.length}</b><div style="font-size:11px;color:#64748b;">फॉलोइंग</div></button>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="font-size:17px;font-weight:800;">${esc(target.name)} ${target.isPrivate ? '🔒' : ''}</div>
+            <div style="font-size:12px;color:#64748b;">@${esc(target.username)} ${!isMine ? `• ${target.isOnline ? 'ऑनलाइन' : timeAgo(target.lastSeen)}` : ''}</div>
+            <p style="margin:6px 0 0;font-size:13px;">${esc(target.bio)}</p>
+          </div>
+
+          ${isMine ? `
+            <div class="row">
+              <button onclick="openEditProfileModal()" class="btn btn-soft" style="flex:1;">प्रोफाइल बदलें</button>
+              <button onclick="openPeopleModal('${cur.uid}','friends')" class="btn btn-soft">दोस्त (${cur.friends.length})</button>
+              <button onclick="openPasswordModal()" class="btn btn-soft" title="पासवर्ड बदलें">⚙️</button>
+              <button onclick="logout()" class="btn btn-danger" title="लॉगआउट / अकाउंट बदलें">🚪</button>
+            </div>` : `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <button onclick="toggleFollow('${target.uid}')" class="btn ${isFol || reqFol ? 'btn-soft' : 'btn-primary'}">${isFol ? '✓ फॉलो कर रहे हैं' : reqFol ? 'अनुरोध भेजा गया' : (target.isPrivate ? 'फॉलो अनुरोध' : '+ फॉलो करें')}</button>
+              <button onclick="openChatWith('${target.uid}')" class="btn btn-dark">💬 संदेश भेजें</button>
+            </div>
+            <div class="row">
+              <button onclick="toggleFriendAction('${target.uid}')" class="btn btn-soft" style="flex:1;font-size:12px;">${isFri ? '✓ मित्र हैं (हटाएँ)' : reqFri ? 'फ्रेंड रिक्वेस्ट रद्द करें' : '👥 फ्रेंड रिक्वेस्ट भेजें'}</button>
+              <button onclick="toggleBlockUser('${target.uid}')" class="btn btn-danger" style="font-size:12px;">${isBlk ? 'अनलॉक करें' : '🚫 ब्लॉक'}</button>
+            </div>`}
+        </div>
+
+        ${isMine && cur.followRequests.length ? `
+          <div class="card card-pad">
+            <b style="font-size:13px;">फॉलो अनुरोध (${cur.followRequests.length})</b>
+            ${cur.followRequests.map(fid => {
+              const u = getUser(fid); if (!u) return '';
+              return `<div class="between" style="margin-top:8px;">
+                <span>${esc(u.name)} (@${esc(u.username)})</span>
+                <div class="row"><button onclick="acceptFollowReq('${u.uid}')" class="btn" style="background:#10b981;color:#fff;padding:5px 10px;">स्वीकार</button><button onclick="rejectFollowReq('${u.uid}')" class="btn btn-soft" style="padding:5px 10px;">✕</button></div>
+              </div>`;
+            }).join('')}
+          </div>` : ''}
+
+        <div class="card">
+          ${isMine ? `
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);">
+              <button onclick="UI.profileTab='posts';render();" style="padding:11px;font-weight:700;font-size:13px;color:${UI.profileTab === 'posts' ? '#FF5A36' : '#64748b'};border-bottom:${UI.profileTab === 'posts' ? '2px solid #FF5A36' : 'none'};">पोस्ट</button>
+              <button onclick="UI.profileTab='saved';render();" style="padding:11px;font-weight:700;font-size:13px;color:${UI.profileTab === 'saved' ? '#FF5A36' : '#64748b'};border-bottom:${UI.profileTab === 'saved' ? '2px solid #FF5A36' : 'none'};">सेव की गईं</button>
+            </div>` : ''}
+          ${!canSee ? `<div class="card-pad" style="text-align:center;padding:34px;">🔒<div style="font-weight:700;margin-top:6px;">यह अकाउंट प्राइवेट है</div><div style="font-size:12px;color:#64748b;">पोस्ट देखने के लिए फॉलो करें।</div></div>` : `
+            <div class="grid-3">
+              ${(UI.profileTab === 'saved' && isMine ? cur.savedPosts.map(id => DB.posts.find(p => p.id === id)).filter(Boolean) : myPosts).map(p => {
+                const s = resolveMediaSrc(p.mediaUrl);
+                return `<div class="grid-cell" onclick="openPostDetailModal('${p.id}')" style="cursor:pointer;">${p.mediaType === 'video' ? `<video src="${s}"></video>` : `<img src="${s}" />`}</div>`;
+              }).join('') || '<p style="grid-column:span 3;text-align:center;color:#94a3b8;padding:24px;">अभी कोई पोस्ट नहीं है।</p>'}
+            </div>`}
+        </div>`;
+    }
+
+    // ---------- मुख्य रेंडर ----------
+    function render() {
+      const app = document.getElementById('app');
+      const cur = me();
+
+      if (!cur) {
+        document.body.style.paddingBottom = '0';
+        app.innerHTML = renderAuthScreen();
+        return;
+      }
+
+      document.body.style.paddingBottom = '72px';
+      const unreadNotifs = DB.notifications.filter(n => n.toUid === cur.uid && !n.isRead).length;
+      const unreadChats = DB.chats
+        .filter(c => c.participants.includes(cur.uid))
+        .reduce((acc, c) => acc + c.messages.filter(m => m.senderId !== cur.uid && !m.isRead).length, 0);
+
+      let bodyHtml = '';
+      if (UI.screen === 'home') bodyHtml = renderHome();
+      else if (UI.screen === 'search') bodyHtml = renderSearch();
+      else if (UI.screen === 'reels') bodyHtml = renderReels();
+      else if (UI.screen === 'notifications') bodyHtml = renderNotifications();
+      else if (UI.screen === 'chat') bodyHtml = renderChat();
+      else if (UI.screen === 'live') bodyHtml = renderLive();
+      else if (UI.screen === 'admin') bodyHtml = renderAdmin();
+      else if (UI.screen === 'profile') bodyHtml = renderProfile();
+
+      app.innerHTML = `
+        ${UI.screen !== 'reels' ? `
+          <header class="header">
+            <div class="header-inner">
+              <button class="logo" onclick="go('home')">
+                <div class="logo-badge">Y</div>
+                <span class="logo-text">YAARI</span>
+              </button>
+              <div class="row" style="gap:4px;">
+                ${cur.isAdmin ? `<button onclick="go('admin')" class="icon-btn" title="एडमिन पैनल">🛡️</button>` : ''}
+                <button onclick="go('live')" class="icon-btn" title="लाइव वीडियो">📡</button>
+                <button onclick="go('notifications')" class="icon-btn" title="नोटिफिकेशन">🔔${unreadNotifs ? `<span class="badge">${unreadNotifs}</span>` : ''}</button>
+                <button onclick="go('chat')" class="icon-btn" title="निजी चैट">💬${unreadChats ? `<span class="badge" style="background:#FF5A36;">${unreadChats}</span>` : ''}</button>
+              </div>
+            </div>
+          </header>` : ''}
+
+        <main class="container">${bodyHtml}</main>
+
+        <nav class="bottom-nav">
+          <div class="bottom-nav-inner">
+            <button onclick="go('home')" class="nav-item ${UI.screen === 'home' ? 'active' : ''}">🏠<span>होम</span></button>
+            <button onclick="go('search')" class="nav-item ${UI.screen === 'search' ? 'active' : ''}">🔍<span>खोजें</span></button>
+            <button onclick="openCreateMenu()" class="nav-item" style="color:#E11D48;">➕<span>बनाएँ</span></button>
+            <button onclick="go('reels')" class="nav-item ${UI.screen === 'reels' ? 'active' : ''}">🎬<span>रील्स</span></button>
+            <button onclick="go('profile','${cur.uid}')" class="nav-item ${UI.screen === 'profile' ? 'active' : ''}">👤<span>प्रोफाइल</span></button>
+          </div>
+        </nav>`;
+    }
+
+    // तुरंत चालू करें
+    render();
+    hydrateAllVideos();
+  </script>
+</body>
+</html>
